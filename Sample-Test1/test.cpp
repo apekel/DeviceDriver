@@ -12,7 +12,7 @@ public:
 	MOCK_METHOD(void, write, (long address, unsigned char data), (override));
 };
 
-TEST(TestCaseName, FiveRead) {
+TEST(ReadTest, FiveTimes) {
 
 	FlashSystemMock fs_mock;
 
@@ -23,7 +23,7 @@ TEST(TestCaseName, FiveRead) {
 	device_driver.read(0xA);
 }
 
-TEST(TestCaseName, Exception) {
+TEST(ReadTest, Exception) {
 
 	FlashSystemMock fs_mock;
 
@@ -37,4 +37,30 @@ TEST(TestCaseName, Exception) {
 
 	DeviceDriver device_driver(&fs_mock);
 	EXPECT_THROW(device_driver.read(0x2), std::exception);
+}
+
+TEST(WriteTest, OneTimes) {
+
+	FlashSystemMock fs_mock;
+
+	EXPECT_CALL(fs_mock, read(0x0))
+		.Times(1)
+		.WillOnce(Return(0xFF));
+	
+	EXPECT_CALL(fs_mock, write)
+		.Times(1);
+
+	DeviceDriver device_driver(&fs_mock);
+	device_driver.write(0x0, 0x11);
+}
+
+TEST(WriteTest, Exception) {
+
+	FlashSystemMock fs_mock;
+
+	EXPECT_CALL(fs_mock, read(0x2))
+		.WillOnce(Return(0x7));
+
+	DeviceDriver device_driver(&fs_mock);
+	EXPECT_THROW(device_driver.write(0x2, 0x0), std::exception);
 }
