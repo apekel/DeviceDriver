@@ -10,4 +10,8 @@ public:
 
 protected:
     FlashMemoryDevice* m_hardware;
+
+private:
+	const int SLEEP_TIME = 10; // ms ¥‹¿ß
+
 };
